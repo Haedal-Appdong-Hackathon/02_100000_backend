@@ -1,6 +1,7 @@
 package Hackerton.Backend.Controller;
 
 import Hackerton.Backend.Data.Dto.Choice.Req.ChoiceReqDto;
+import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceGetRankRes;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResArtistsDto;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResUsersDto;
 import Hackerton.Backend.Data.Dto.ConcertReview.Res.ConcertReviewResDto;
@@ -17,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -76,6 +79,16 @@ public class ChoiceController {
     })
     public ResponseEntity<HttpStatus> deleteChoiceArtist(@RequestBody ChoiceReqDto dto, Authentication authentication){
         return choiceService.deleteChoiceArtist(dto,authentication);
+    }
+
+    @GetMapping("/rank")
+    @Operation(summary = "아티스트 찜 랭킹 API", description = "아티스트 찜이 높은 순서대로 가져옵니다.")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "찜한 아티스트 랭킹 조회 성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ChoiceGetRankRes.class))))
+    )
+    public ResponseEntity<List<ChoiceGetRankRes>> getChoiceRank(){
+        return choiceService.getChoiceRank();
     }
 
 }
