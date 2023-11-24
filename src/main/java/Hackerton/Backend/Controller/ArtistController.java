@@ -4,7 +4,6 @@ import Hackerton.Backend.Data.Dto.Artist.Req.ArtistInformationReq;
 import Hackerton.Backend.Data.Dto.Artist.Req.ArtistUpdateReq;
 import Hackerton.Backend.Data.Dto.Artist.Res.ArtistInformationRes;
 import Hackerton.Backend.Service.ArtistService;
-import Hackerton.Backend.Service.Impl.ArtistServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "아티스트 관련 API")
 public class ArtistController {
 
-    private ArtistService artistService;
+    private final ArtistService artistService;
 
     @PostMapping("/create")
     @Operation(summary = "아티스트 정보 저장 API", description = "아티스트의 정보를 저장")
@@ -52,7 +51,7 @@ public class ArtistController {
         return artistService.getArtist(artistId);
     }
 
-    @PatchMapping("/search")
+    @PatchMapping("/update/{artistId}")
     @Operation(summary = "아티스트 ", description = "아티스트의 정보를 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
@@ -64,7 +63,7 @@ public class ArtistController {
         return artistService.updateArtist(artistUpdateReq, artistId);
     }
 
-    @GetMapping("/{artistId}/count")
+    @GetMapping("/count/{artistId}")
     @Operation(summary = "버스킹 진행횟수", description = "버스킹 진행횟수 세기")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "횟수 성공",

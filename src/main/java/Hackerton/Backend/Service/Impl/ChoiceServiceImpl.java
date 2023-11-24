@@ -1,6 +1,6 @@
 package Hackerton.Backend.Service.Impl;
 
-import Hackerton.Backend.Data.Dto.Choice.Req.ChoiceReqDto;
+import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceGetRankRes;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResArtistsDto;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResUsersDto;
 import Hackerton.Backend.Data.Entity.Artist;
@@ -13,6 +13,7 @@ import Hackerton.Backend.Repository.UserRepository;
 import Hackerton.Backend.Service.ChoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -72,13 +73,13 @@ public class ChoiceServiceImpl implements ChoiceService {
         return new ResponseEntity<>(choiceResUsersDto,HttpStatus.OK);
 
     }
-    public ResponseEntity<HttpStatus> choiceArtist(ChoiceReqDto dto, Authentication authentication){
+    public ResponseEntity<HttpStatus> choiceArtist(Long id, Authentication authentication){
         User user = userRepository.findById(Integer.valueOf(authentication.getName()));
         if(user==null){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        Artist artist=dto.getArtist();
+        Artist artist = artistRepository.findById(id).orElse(null);
         if(artist==null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -96,8 +97,10 @@ public class ChoiceServiceImpl implements ChoiceService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<HttpStatus> deleteChoiceArtist(ChoiceReqDto dto, Authentication authentication){
-        Choice choice =choiceRepository.findByIdUserAndIdArtist(dto.getUser(),dto.getArtist()).orElse(null);
+    public ResponseEntity<HttpStatus> deleteChoiceArtist(Long id, Authentication authentication){
+        User user = userRepository.findById(Integer.valueOf(authentication.getName()));
+        Artist artist = artistRepository.findById(id).orElse(null);
+        Choice choice =choiceRepository.findByIdUserAndIdArtist(user, artist).orElse(null);
         if(choice==null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -105,5 +108,15 @@ public class ChoiceServiceImpl implements ChoiceService {
         choiceRepository.delete(choice);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<ChoiceGetRankRes>> getChoiceRank() {
+        List<ChoiceGetRankRes> choiceGetRankRes = new ArrayList<>();
+
+        for(Object[] artist : artistRepository.findArtistChoiceRank(PageRequest.of(0, 3)))
+            choiceGetRankRes.add(new ChoiceGetRankRes((String) artist[0], (Long) artist[1]));
+
+        return new ResponseEntity<>(choiceGetRankRes, HttpStatus.OK);
     }
 }
