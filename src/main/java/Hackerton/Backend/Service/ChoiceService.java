@@ -1,6 +1,5 @@
 package Hackerton.Backend.Service;
 
-import Hackerton.Backend.Data.Dto.Choice.Req.ChoiceReqDto;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceGetRankRes;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResArtistsDto;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResUsersDto;
@@ -16,9 +15,9 @@ public interface ChoiceService {
 
     ResponseEntity<ChoiceResUsersDto> getUserNum(Authentication authentication);
 
-    ResponseEntity<HttpStatus> choiceArtist(ChoiceReqDto dto, Authentication authentication);
+    ResponseEntity<HttpStatus> choiceArtist(Long id, Authentication authentication);
 
-    ResponseEntity<HttpStatus> deleteChoiceArtist(ChoiceReqDto dto,  Authentication authentication);
+    ResponseEntity<HttpStatus> deleteChoiceArtist(Long id,  Authentication authentication);
 
     ResponseEntity<List<ChoiceGetRankRes>> getChoiceRank();
 }

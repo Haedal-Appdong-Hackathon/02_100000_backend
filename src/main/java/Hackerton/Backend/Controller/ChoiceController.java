@@ -1,6 +1,5 @@
 package Hackerton.Backend.Controller;
 
-import Hackerton.Backend.Data.Dto.Choice.Req.ChoiceReqDto;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResArtistsDto;
 import Hackerton.Backend.Data.Dto.Choice.Res.ChoiceResUsersDto;
 import Hackerton.Backend.Service.ChoiceService;
@@ -51,7 +50,7 @@ public class ChoiceController {
     public ResponseEntity<ChoiceResUsersDto> getUsers(Authentication authentication){
         return choiceService.getUserNum(authentication);
     }
-    @PostMapping
+    @PostMapping("/{id}")
     @Operation(summary = "아티스트 찜 등록API", description = "아티스트 찜 등록")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "아티스트 찜 성공",
@@ -61,10 +60,10 @@ public class ChoiceController {
             @ApiResponse(responseCode = "404", description = "아티스트 찜 실패",
                     content = @Content(schema = @Schema(implementation = HttpStatus.class))),
     })
-    public ResponseEntity<HttpStatus> choiceArtist(@RequestBody ChoiceReqDto dto, Authentication authentication){
-        return choiceService.choiceArtist(dto,authentication);
+    public ResponseEntity<HttpStatus> choiceArtist(@PathVariable Long id, Authentication authentication){
+        return choiceService.choiceArtist(id,authentication);
     }
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @Operation(summary = "아티스트 찜 삭제API", description = "아티스트 찜 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "아티스트 찜 삭제 성공",
@@ -72,8 +71,8 @@ public class ChoiceController {
             @ApiResponse(responseCode = "404", description = "아티스트 찜 삭제 실패",
                     content = @Content(schema = @Schema(implementation = HttpStatus.class))),
     })
-    public ResponseEntity<HttpStatus> deleteChoiceArtist(@RequestBody ChoiceReqDto dto, Authentication authentication){
-        return choiceService.deleteChoiceArtist(dto,authentication);
+    public ResponseEntity<HttpStatus> deleteChoiceArtist(@PathVariable Long id, Authentication authentication){
+        return choiceService.deleteChoiceArtist(id, authentication);
     }
 
 }
